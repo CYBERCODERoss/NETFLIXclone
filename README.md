@@ -6,9 +6,9 @@
 
 ### **Phase 1: Initial Setup and Deployment**
 
-**Step 1: Launch EC2 (Ubuntu 22.04):**
+**Step 1: Launch EC2 or AZURE VIRTUAL MACHINE**
 
-- Provision an EC2 instance on AWS with Ubuntu 22.04.
+- Launching EC2 instance / Azure (in my case i'm using Azure Virtual Machine)
 - Connect to the instance using SSH.
 
 **Step 2: Clone the Code:**
@@ -17,19 +17,19 @@
 - Clone your application's code repository onto the EC2 instance:
     
     ```bash
-    git clone https://github.com/N4si/DevSecOps-Project.git
+    git clone https://github.com/CYBERCODERoss/NETFLIXclone.git
     ```
     
 
 **Step 3: Install Docker and Run the App Using a Container:**
 
-- Set up Docker on the EC2 instance:
+- Set up Docker on the EC2 instance/AVM:
     
     ```bash
     
     sudo apt-get update
     sudo apt-get install docker.io -y
-    sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu'
+    sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu,azureuser'
     newgrp docker
     sudo chmod 777 /var/run/docker.sock
     ```
@@ -40,24 +40,18 @@
     docker build -t netflix .
     docker run -d --name netflix -p 8081:80 netflix:latest
     
-    #to delete
-    docker stop <containerid>
-    docker rmi -f netflix
     ```
-
-It will show an error cause you need API key
+It will show an empty page when we run the http link on any browser
+    ```bash
+    http://localhost:8001/
+    ```
+For connecting it properly let's add a API provided by **THE MOVIE DATABASE**
 
 **Step 4: Get the API Key:**
+- Already created an account on TMDB?
+- Fine, we can find the API key or can create one by going to **SETTING** and can find the **API** there
 
-- Open a web browser and navigate to TMDB (The Movie Database) website.
-- Click on "Login" and create an account.
-- Once logged in, go to your profile and select "Settings."
-- Click on "API" from the left-side panel.
-- Create a new API key by clicking "Create" and accepting the terms and conditions.
-- Provide the required basic details and click "Submit."
-- You will receive your TMDB API key.
-
-Now recreate the Docker image with your api key:
+Now we will recreate the Docker image with our api key:
 ```
 docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
 ```
@@ -65,7 +59,7 @@ docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
 **Phase 2: Security**
 
 1. **Install SonarQube and Trivy:**
-    - Install SonarQube and Trivy on the EC2 instance to scan for vulnerabilities.
+    - Install SonarQube and Trivy on the EC2 instance/AVM to scan for vulnerabilities.
         
         sonarqube
         ```
@@ -73,9 +67,13 @@ docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
         ```
         
         
-        To access: 
-        
-        publicIP:9000 (by default username & password is admin)
+        To access:
+      
+        publicIP of EC2 instance/AVM:port-number (sonarqube runs on 9000 by default)
+          ```bash
+              publicIP:9000
+          ```
+        Default username/password for SonarQube is **admin** 
         
         To install Trivy:
         ```
@@ -85,11 +83,7 @@ docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
         sudo apt-get update
         sudo apt-get install trivy        
         ```
-        
-        to scan image using trivy
-        ```
-        trivy image <imageid>
-        ```
+
         
         
 2. **Integrate SonarQube and Configure:**
@@ -99,7 +93,7 @@ docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
 **Phase 3: CI/CD Setup**
 
 1. **Install Jenkins for Automation:**
-    - Install Jenkins on the EC2 instance to automate deployment:
+    - Install Jenkins on the EC2 instance/AVM to automate deployment:
     Install Java
     
     ```bash
