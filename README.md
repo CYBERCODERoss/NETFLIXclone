@@ -14,7 +14,7 @@
 **Step 2: Clone the Code:**
 
 - Update all the packages and then clone the code.
-- Clone your application's code repository onto the EC2 instance:
+- Clone our application's code repository onto the EC2 instance/AVM:
     
     ```bash
     git clone https://github.com/CYBERCODERoss/NETFLIXclone.git
@@ -29,12 +29,12 @@
     
     sudo apt-get update
     sudo apt-get install docker.io -y
-    sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu,azureuser'
+    sudo usermod -aG docker $USER  # Replace with our system's username, e.g., 'ubuntu,azureuser'
     newgrp docker
     sudo chmod 777 /var/run/docker.sock
     ```
     
-- Build and run your application using Docker containers:
+- Build and run our application using Docker containers:
     
     ```bash
     docker build -t netflix .
@@ -42,7 +42,7 @@
     
     ```
 It will show an empty page when we run the http link on any browser
-    ```bash
+    ```
     http://localhost:8001/
     ```
 For connecting it properly let's add a API provided by **THE MOVIE DATABASE**
@@ -53,7 +53,7 @@ For connecting it properly let's add a API provided by **THE MOVIE DATABASE**
 
 Now we will recreate the Docker image with our api key:
 ```
-docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
+docker build --build-arg TMDB_V3_API_KEY=<our-api-key> -t netflix .
 ```
 
 **Phase 2: Security**
@@ -70,7 +70,7 @@ docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
         To access:
       
         publicIP of EC2 instance/AVM:port-number (sonarqube runs on 9000 by default)
-          ```bash
+          ```
               publicIP:9000
           ```
         Default username/password for SonarQube is **admin** 
@@ -87,7 +87,7 @@ docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
         
         
 2. **Integrate SonarQube and Configure:**
-    - Integrate SonarQube with your CI/CD pipeline.
+    - Integrate SonarQube with our CI/CD pipeline.
     - Configure SonarQube to analyze code for quality and security issues.
 
 **Phase 3: CI/CD Setup**
@@ -99,10 +99,6 @@ docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
     ```bash
     sudo apt update
     sudo apt install fontconfig openjdk-17-jre
-    java -version
-    openjdk version "17.0.8" 2023-07-18
-    OpenJDK Runtime Environment (build 17.0.8+7-Debian-1deb12u1)
-    OpenJDK 64-Bit Server VM (build 17.0.8+7-Debian-1deb12u1, mixed mode, sharing)
     
     #jenkins
     sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
@@ -116,9 +112,12 @@ docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
     sudo systemctl enable jenkins
     ```
     
-    - Access Jenkins in a web browser using the public IP of your EC2 instance.
-        
-        publicIp:8080
+   To access:
+      
+    publicIP of EC2 instance/AVM:port-number (Jenkins runs on 8080 by default)
+          ```
+              publicIP:8080
+          ```
         
 2. **Install Necessary Plugins in Jenkins:**
 
@@ -126,11 +125,11 @@ Goto Manage Jenkins →Plugins → Available Plugins →
 
 Install below plugins
 
-1 Eclipse Temurin Installer (Install without restart)
+1 Eclipse Temurin Installer 
 
-2 SonarQube Scanner (Install without restart)
+2 SonarQube Scanner 
 
-3 NodeJs Plugin (Install Without restart)
+3 NodeJs Plugin 
 
 4 Email Extension Plugin
 
@@ -158,7 +157,7 @@ We will install a sonar scanner in the tools.
 Create a Jenkins webhook
 
 1. **Configure CI/CD Pipeline in Jenkins:**
-- Create a CI/CD pipeline in Jenkins to automate your application deployment.
+- Create a CI/CD pipeline in Jenkins to automate our application deployment.
 
 ```groovy
 pipeline {
@@ -178,7 +177,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/N4si/DevSecOps-Project.git'
+                git branch: 'main', url: 'https://github.com/CYBERCODERoss/NETFLIXclone.git'
             }
         }
         stage("Sonarqube Analysis") {
@@ -205,28 +204,28 @@ pipeline {
 }
 ```
 
-Certainly, here are the instructions without step numbers:
+
 
 **Install Dependency-Check and Docker Tools in Jenkins**
 
 **Install Dependency-Check Plugin:**
 
-- Go to "Dashboard" in your Jenkins web interface.
+- Go to "Dashboard" in our Jenkins web interface.
 - Navigate to "Manage Jenkins" → "Manage Plugins."
 - Click on the "Available" tab and search for "OWASP Dependency-Check."
 - Check the checkbox for "OWASP Dependency-Check" and click on the "Install without restart" button.
 
 **Configure Dependency-Check Tool:**
 
-- After installing the Dependency-Check plugin, you need to configure the tool.
+- After installing the Dependency-Check plugin, we need to configure the tool.
 - Go to "Dashboard" → "Manage Jenkins" → "Global Tool Configuration."
 - Find the section for "OWASP Dependency-Check."
 - Add the tool's name, e.g., "DP-Check."
-- Save your settings.
+- Save our settings.
 
 **Install Docker Tools and Docker Plugins:**
 
-- Go to "Dashboard" in your Jenkins web interface.
+- Go to "Dashboard" in our Jenkins web interface.
 - Navigate to "Manage Jenkins" → "Manage Plugins."
 - Click on the "Available" tab and search for "Docker."
 - Check the following Docker-related plugins:
@@ -235,19 +234,19 @@ Certainly, here are the instructions without step numbers:
   - Docker Pipeline
   - Docker API
   - docker-build-step
-- Click on the "Install without restart" button to install these plugins.
+- Click install to install these plugins.
 
 **Add DockerHub Credentials:**
 
-- To securely handle DockerHub credentials in your Jenkins pipeline, follow these steps:
+- To securely handle DockerHub credentials in our Jenkins pipeline, follow these steps:
   - Go to "Dashboard" → "Manage Jenkins" → "Manage Credentials."
   - Click on "System" and then "Global credentials (unrestricted)."
   - Click on "Add Credentials" on the left side.
   - Choose "Secret text" as the kind of credentials.
-  - Enter your DockerHub credentials (Username and Password) and give the credentials an ID (e.g., "docker").
-  - Click "OK" to save your DockerHub credentials.
+  - Enter our DockerHub credentials (Username and Password) and give the credentials an ID.
+  - Click "OK" to save our DockerHub credentials.
 
-Now, you have installed the Dependency-Check plugin, configured the tool, and added Docker-related plugins along with your DockerHub credentials in Jenkins. You can now proceed with configuring your Jenkins pipeline to include these tools and credentials in your CI/CD process.
+Now, we have installed the Dependency-Check plugin, configured the tool, and added Docker-related plugins along with our DockerHub credentials in Jenkins. we can now proceed with configuring our Jenkins pipeline to include these tools and credentials in our CI/CD process.
 
 ```groovy
 
@@ -268,7 +267,7 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: 'https://github.com/N4si/DevSecOps-Project.git'
+                git branch: 'main', url: 'https://github.com/CYBERCODERoss/NETFLIXlone.git'
             }
         }
         stage("Sonarqube Analysis "){
@@ -306,32 +305,25 @@ pipeline{
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build --build-arg TMDB_V3_API_KEY=<yourapikey> -t netflix ."
-                       sh "docker tag netflix nasi101/netflix:latest "
-                       sh "docker push nasi101/netflix:latest "
+                       sh "docker build --build-arg TMDB_V3_API_KEY=<ourapikey> -t netflix ."
+                       sh "docker tag netflix CYBERCODERoss/netflix:latest "
+                       sh "docker push CYBERCODERoss/netflix:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image nasi101/netflix:latest > trivyimage.txt" 
+                sh "trivy image CYBERCODERoss/netflix:latest > trivyimage.txt" 
             }
         }
         stage('Deploy to container'){
             steps{
-                sh 'docker run -d --name netflix -p 8081:80 nasi101/netflix:latest'
+                sh 'docker run -d --name netflix -p 8081:80 CYBERCODERoss/netflix:latest'
             }
         }
     }
 }
-
-
-If you get docker login failed errorr
-
-sudo su
-sudo usermod -aG docker jenkins
-sudo systemctl restart jenkins
 
 
 ```
@@ -340,7 +332,7 @@ sudo systemctl restart jenkins
 
 1. **Install Prometheus and Grafana:**
 
-   Set up Prometheus and Grafana to monitor your application.
+   Set up Prometheus and Grafana to monitor our application.
 
    **Installing Prometheus:**
 
@@ -403,16 +395,7 @@ sudo systemctl restart jenkins
    WantedBy=multi-user.target
    ```
 
-   Here's a brief explanation of the key parts in this `prometheus.service` file:
-
-   - `User` and `Group` specify the Linux user and group under which Prometheus will run.
-
-   - `ExecStart` is where you specify the Prometheus binary path, the location of the configuration file (`prometheus.yml`), the storage directory, and other settings.
-
-   - `web.listen-address` configures Prometheus to listen on all network interfaces on port 9090.
-
-   - `web.enable-lifecycle` allows for management of Prometheus through API calls.
-
+   
    Enable and start Prometheus:
 
    ```bash
@@ -426,9 +409,11 @@ sudo systemctl restart jenkins
    sudo systemctl status prometheus
    ```
 
-   You can access Prometheus in a web browser using your server's IP and port 9090:
+    To access:
+   
+      we can access Prometheus in a web browser using our server's IP and port 9090:
 
-   `http://<your-server-ip>:9090`
+           `http://<our-server-ip>:9090`
 
    **Installing Node Exporter:**
 
@@ -476,8 +461,6 @@ sudo systemctl restart jenkins
    WantedBy=multi-user.target
    ```
 
-   Replace `--collector.logind` with any additional flags as needed.
-
    Enable and start Node Exporter:
 
    ```bash
@@ -491,15 +474,15 @@ sudo systemctl restart jenkins
    sudo systemctl status node_exporter
    ```
 
-   You can access Node Exporter metrics in Prometheus.
+   we can access Node Exporter metrics in Prometheus.
 
-2. **Configure Prometheus Plugin Integration:**
+3. **Configure Prometheus Plugin Integration:**
 
    Integrate Jenkins with Prometheus to monitor the CI/CD pipeline.
 
    **Prometheus Configuration:**
 
-   To configure Prometheus to scrape metrics from Node Exporter and Jenkins, you need to modify the `prometheus.yml` file. Here is an example `prometheus.yml` configuration for your setup:
+   To configure Prometheus to scrape metrics from Node Exporter and Jenkins, we need to modify the `prometheus.yml` file. Here is an example `prometheus.yml` configuration for our setup:
 
    ```yaml
    global:
@@ -513,10 +496,9 @@ sudo systemctl restart jenkins
      - job_name: 'jenkins'
        metrics_path: '/prometheus'
        static_configs:
-         - targets: ['<your-jenkins-ip>:<your-jenkins-port>']
+         - targets: ['<our-jenkins-ip>:<our-jenkins-port>']
    ```
 
-   Make sure to replace `<your-jenkins-ip>` and `<your-jenkins-port>` with the appropriate values for your Jenkins setup.
 
    Check the validity of the configuration file:
 
@@ -530,9 +512,9 @@ sudo systemctl restart jenkins
    curl -X POST http://localhost:9090/-/reload
    ```
 
-   You can access Prometheus targets at:
+   we can access Prometheus targets at:
 
-   `http://<your-prometheus-ip>:9090/targets`
+   `http://<our-prometheus-ip>:9090/targets`
 
 
 ####Grafana
@@ -597,19 +579,17 @@ sudo systemctl status grafana-server
 
 **Step 7: Access Grafana Web Interface:**
 
-Open a web browser and navigate to Grafana using your server's IP address. The default port for Grafana is 3000. For example:
+To access:
+   Open a web browser and navigate to Grafana using our server's IP address. The default port for Grafana is 3000. For example:
 
-`http://<your-server-ip>:3000`
+            `http://<our-server-ip>:3000`
 
-You'll be prompted to log in to Grafana. The default username is "admin," and the default password is also "admin."
+we'll be prompted to log in to Grafana. default username/passowrd is **admin**.
 
-**Step 8: Change the Default Password:**
 
-When you log in for the first time, Grafana will prompt you to change the default password for security reasons. Follow the prompts to set a new password.
+**Step 8: Add Prometheus Data Source:**
 
-**Step 9: Add Prometheus Data Source:**
-
-To visualize metrics, you need to add a data source. Follow these steps:
+To visualize metrics, we need to add a data source. Follow these steps:
 
 - Click on the gear icon (⚙️) in the left sidebar to open the "Configuration" menu.
 
@@ -623,9 +603,9 @@ To visualize metrics, you need to add a data source. Follow these steps:
   - Set the "URL" to `http://localhost:9090` (assuming Prometheus is running on the same server).
   - Click the "Save & Test" button to ensure the data source is working.
 
-**Step 10: Import a Dashboard:**
+**Step 9: Import a Dashboard:**
 
-To make it easier to view metrics, you can import a pre-configured dashboard. Follow these steps:
+To make it easier to view metrics, we can import a pre-configured dashboard. Follow these steps:
 
 - Click on the "+" (plus) icon in the left sidebar to open the "Create" menu.
 
@@ -633,19 +613,19 @@ To make it easier to view metrics, you can import a pre-configured dashboard. Fo
 
 - Click on the "Import" dashboard option.
 
-- Enter the dashboard code you want to import (e.g., code 1860).
+- Enter the dashboard code we want to import (e.g., code 1860).
 
 - Click the "Load" button.
 
-- Select the data source you added (Prometheus) from the dropdown.
+- Select the data source we added (Prometheus) from the dropdown.
 
 - Click on the "Import" button.
 
-You should now have a Grafana dashboard set up to visualize metrics from Prometheus.
+we should now have a Grafana dashboard set up to visualize metrics from Prometheus.
 
-Grafana is a powerful tool for creating visualizations and dashboards, and you can further customize it to suit your specific monitoring needs.
+Grafana is a powerful tool for creating visualizations and dashboards, and we can further customize it to suit our specific monitoring needs.
 
-That's it! You've successfully installed and set up Grafana to work with Prometheus for monitoring and visualization.
+That's it! we've successfully installed and set up Grafana to work with Prometheus for monitoring and visualization.
 
 2. **Configure Prometheus Plugin Integration:**
     - Integrate Jenkins with Prometheus to monitor the CI/CD pipeline.
@@ -660,15 +640,15 @@ That's it! You've successfully installed and set up Grafana to work with Prometh
 
 ## Create Kubernetes Cluster with Nodegroups
 
-In this phase, you'll set up a Kubernetes cluster with node groups. This will provide a scalable environment to deploy and manage your applications.
+In this phase, we'll set up a Kubernetes cluster with node groups. This will provide a scalable environment to deploy and manage our applications.
 
 ## Monitor Kubernetes with Prometheus
 
-Prometheus is a powerful monitoring and alerting toolkit, and you'll use it to monitor your Kubernetes cluster. Additionally, you'll install the node exporter using Helm to collect metrics from your cluster nodes.
+Prometheus is a powerful monitoring and alerting toolkit, and we'll use it to monitor our Kubernetes cluster. Additionally, we'll install the node exporter using Helm to collect metrics from our cluster nodes.
 
 ### Install Node Exporter using Helm
 
-To begin monitoring your Kubernetes cluster, you'll install the Prometheus Node Exporter. This component allows you to collect system-level metrics from your cluster nodes. Here are the steps to install the Node Exporter using Helm:
+To begin monitoring our Kubernetes cluster, we'll install the Prometheus Node Exporter. This component allows we to collect system-level metrics from our cluster nodes. Here are the steps to install the Node Exporter using Helm:
 
 1. Add the Prometheus Community Helm repository:
 
@@ -690,7 +670,7 @@ To begin monitoring your Kubernetes cluster, you'll install the Prometheus Node 
 
 Add a Job to Scrape Metrics on nodeip:9001/metrics in prometheus.yml:
 
-Update your Prometheus configuration (prometheus.yml) to add a new job for scraping metrics from nodeip:9001/metrics. You can do this by adding the following configuration to your prometheus.yml file:
+Update our Prometheus configuration (prometheus.yml) to add a new job for scraping metrics from nodeip:9001/metrics. we can do this by adding the following configuration to our prometheus.yml file:
 
 
 ```
@@ -700,31 +680,31 @@ Update your Prometheus configuration (prometheus.yml) to add a new job for scrap
       - targets: ['node1Ip:9100']
 ```
 
-Replace 'your-job-name' with a descriptive name for your job. The static_configs section specifies the targets to scrape metrics from, and in this case, it's set to nodeip:9001.
+Replace 'our-job-name' with a descriptive name for our job. The static_configs section specifies the targets to scrape metrics from, and in this case, it's set to nodeip:9001.
 
-Don't forget to reload or restart Prometheus to apply these changes to your configuration.
+Don't forget to reload or restart Prometheus to apply these changes to our configuration.
 
-To deploy an application with ArgoCD, you can follow these steps, which I'll outline in Markdown format:
+To deploy an application with ArgoCD, we can follow these steps, which I'll outline in Markdown format:
 
 ### Deploy Application with ArgoCD
 
 1. **Install ArgoCD:**
 
-   You can install ArgoCD on your Kubernetes cluster by following the instructions provided in the [EKS Workshop](https://archive.eksworkshop.com/intermediate/290_argocd/install/) documentation.
+   we can install ArgoCD on our Kubernetes cluster by following the instructions provided in the [EKS Workshop](https://archive.eksworkshop.com/intermediate/290_argocd/install/) documentation.
 
-2. **Set Your GitHub Repository as a Source:**
+2. **Set our GitHub Repository as a Source:**
 
-   After installing ArgoCD, you need to set up your GitHub repository as a source for your application deployment. This typically involves configuring the connection to your repository and defining the source for your ArgoCD application. The specific steps will depend on your setup and requirements.
+   After installing ArgoCD, we need to set up our GitHub repository as a source for our application deployment. This typically involves configuring the connection to our repository and defining the source for our ArgoCD application. The specific steps will depend on our setup and requirements.
 
 3. **Create an ArgoCD Application:**
-   - `name`: Set the name for your application.
-   - `destination`: Define the destination where your application should be deployed.
+   - `name`: Set the name for our application.
+   - `destination`: Define the destination where our application should be deployed.
    - `project`: Specify the project the application belongs to.
-   - `source`: Set the source of your application, including the GitHub repository URL, revision, and the path to the application within the repository.
+   - `source`: Set the source of our application, including the GitHub repository URL, revision, and the path to the application within the repository.
    - `syncPolicy`: Configure the sync policy, including automatic syncing, pruning, and self-healing.
 
-4. **Access your Application**
-   - To Access the app make sure port 30007 is open in your security group and then open a new tab paste your NodeIP:30007, your app should be running.
+4. **Access our Application**
+   - To Access the app make sure port 30007 is open in our security group and then open a new tab paste our NodeIP:30007, our app should be running.
 
 **Phase 7: Cleanup**
 
