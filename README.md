@@ -21,7 +21,7 @@
     ```
     
 
-**Step 3: Install Docker and Run the App Using a Container:**
+**Step 3: Install Docker and Run the App Using a Container on LocalHost:**
 
 - Set up Docker on the EC2 instance/AVM:
     
