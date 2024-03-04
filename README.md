@@ -250,62 +250,75 @@ Now, we have installed the Dependency-Check plugin, configured the tool, and add
 
 ```groovy
 
-pipeline{
+pipeline {
     agent any
-    tools{
+    tools {
         jdk 'jdk17'
         nodejs 'node16'
     }
     environment {
-        SCANNER_HOME=tool 'sonar-scanner'
+        SCANNER_HOME = tool 'sonar-scanner'
     }
     stages {
-        stage('clean workspace'){
-            steps{
+        stage('clean workspace') {
+            steps {
                 cleanWs()
             }
         }
-        stage('Checkout from Git'){
-            steps{
-                git branch: 'main', url: 'https://github.com/CYBERCODERoss/NETFLIXlone.git'
+        stage('Checkout from Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/CYBERCODERoss/NETFLIXclone.git'
             }
         }
-        stage("Sonarqube Analysis "){
-            steps{
+        stage("Sonarqube Analysis ") {
+            steps {
                 withSonarQubeEnv('sonar-server') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
                     -Dsonar.projectKey=Netflix '''
                 }
             }
         }
-        stage("quality gate"){
-           steps {
+        stage("quality gate") {
+            steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
                 }
-            } 
+            }
         }
         stage('Install Dependencies') {
             steps {
                 sh "npm install"
             }
         }
-        stage('OWASP FS SCAN') {
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+         stage('OWASP FS SCAN') {
+    steps {
+        script {
+            // Set the NVD API key as an environment variable
+            def nvdApiKeyCredentialId = 'NVD'
+
+            // Use withCredentials to securely inject the API key into the environment variable
+            withCredentials([string(credentialsId: nvdApiKeyCredentialId, variable: 'NVD')]) {
+                // Run OWASP Dependency-Check scan
+                def scanResult = dependencyCheck additionalArguments: "--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey $NVD", odcInstallation: 'DP-Check'
+                echo "Dependency-Check scan completed successfully."
+                echo "Result: $scanResult"
             }
         }
+    }
+}
+
+
         stage('TRIVY FS SCAN') {
             steps {
                 sh "trivy fs . > trivyfs.txt"
             }
         }
-        stage("Docker Build & Push"){
+    }
+stage("Docker Build & Push"){
             steps{
                 script{
-                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build --build-arg TMDB_V3_API_KEY=<ourapikey> -t netflix ."
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
+                       sh "docker build --build-arg TMDB_V3_API_KEY=cfdcd036d135fbc69ba1965d74bdcb68 -t netflix ."
                        sh "docker tag netflix CYBERCODERoss/netflix:latest "
                        sh "docker push CYBERCODERoss/netflix:latest "
                     }
@@ -314,13 +327,18 @@ pipeline{
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image CYBERCODERoss/netflix:latest > trivyimage.txt" 
+                sh "trivy image CYBERCODERoss/netflix:latest > trivyimage.txt"
             }
         }
-        stage('Deploy to container'){
-            steps{
-                sh 'docker run -d --name netflix -p 8081:80 CYBERCODERoss/netflix:latest'
-            }
+    post {
+        always {
+            emailext attachLog: true,
+                subject: "'${currentBuild.result}'",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                    "URL: ${env.BUILD_URL}<br/>",
+                to: 'krypttech4@gmail.com',
+                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
         }
     }
 }
