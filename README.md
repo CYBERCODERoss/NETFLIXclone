@@ -250,6 +250,7 @@ Now, we have installed the Dependency-Check plugin, configured the tool, and add
 
 ```groovy
 
+
 pipeline {
     agent any
     tools {
@@ -294,7 +295,7 @@ pipeline {
     steps {
         script {
             // Set the NVD API key as an environment variable
-            def nvdApiKeyCredentialId = 'NVD'
+            def nvdApiKeyCredentialId = 'NVD' <add environment variable/credentials of NVD API to Jenkins>
 
             // Use withCredentials to securely inject the API key into the environment variable
             withCredentials([string(credentialsId: nvdApiKeyCredentialId, variable: 'NVD')]) {
@@ -318,7 +319,7 @@ stage("Docker Build & Push"){
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
-                       sh "docker build --build-arg TMDB_V3_API_KEY=cfdcd036d135fbc69ba1965d74bdcb68 -t netflix ."
+                       sh "docker build --build-arg TMDB_V3_API_KEY=<your API key> -t netflix ."
                        sh "docker tag netflix CYBERCODERoss/netflix:latest "
                        sh "docker push CYBERCODERoss/netflix:latest "
                     }
@@ -342,6 +343,7 @@ stage("Docker Build & Push"){
         }
     }
 }
+
 
 
 ```
